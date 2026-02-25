@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAZIZ | Fullstack Developer Portfolio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #00ffa3;
+            --bg: #020202;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.07);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+
+        /* Noise Texture Effect */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05; pointer-events: none; z-index: 999;
+        }
+
+        /* Custom Cursor */
+        #cursor {
+            width: 8px; height: 8px; background: var(--primary); border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 10000;
+            box-shadow: 0 0 15px var(--primary); transition: transform 0.1s ease;
+        }
+        #cursor-follower {
+            width: 40px; height: 40px; border: 1px solid var(--primary); border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999;
+            transition: transform 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            opacity: 0.3;
+        }
+
+        /* Background Light */
+        .blob {
+            position: fixed; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,255,163,0.1) 0%, transparent 70%);
+            border-radius: 50%; z-index: -1; filter: blur(80px);
+        }
+
+        nav { 
+            padding: 25px 8%; display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; width: 100%; top: 0; z-index: 1000; backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo { font-family: 'Syne', sans-serif; font-size: 1.7rem; font-weight: 800; }
+        .logo span { color: var(--primary); }
+
+        section { padding: 150px 8% 50px; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+
+        /* Hero */
+        .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(3.5rem, 12vw, 9rem); line-height: 0.8; text-transform: uppercase; margin-bottom: 40px; }
+        .hero h1 span { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.4); }
+        .about-card { background: var(--glass); border: 1px solid var(--border); padding: 40px; border-radius: 30px; line-height: 1.8; max-width: 700px; }
+
+        /* Skills */
+        .skills-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .skill-card { background: var(--glass); padding: 30px; border-radius: 20px; border: 1px solid var(--border); transition: 0.4s; }
+        .progress-track { height: 2px; background: rgba(255,255,255,0.1); margin-top: 15px; position: relative; }
+        .progress-bar { position: absolute; left: 0; top: 0; height: 100%; background: var(--primary); width: 0; transition: 2s ease-out; }
+
+        /* Projects Section - NEW Grid Layout */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .project-card {
+            background: var(--glass); border: 1px solid var(--border); padding: 40px; border-radius: 30px;
+            text-decoration: none; color: #fff; transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .project-card:hover { border-color: var(--primary); transform: translateY(-10px); background: rgba(0,255,163,0.05); }
+        .project-card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; display: block; }
+        .project-card h3 { font-family: 'Syne', sans-serif; margin-bottom: 10px; font-size: 1.8rem; }
+        .project-card p { color: #888; font-size: 0.9rem; margin-bottom: 20px; }
+        .tag { font-size: 0.7rem; font-family: monospace; border: 1px solid var(--primary); color: var(--primary); padding: 2px 8px; border-radius: 10px; }
+
+        /* Contact Section */
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 50px; }
+        .btn-contact {
+            padding: 30px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border);
+            text-decoration: none; color: #fff; text-align: center; transition: 0.3s;
+        }
+        .btn-contact:hover { background: var(--primary); color: #000; box-shadow: 0 0 20px var(--primary); }
+        .btn-contact i { font-size: 1.5rem; margin-bottom: 10px; display: block; }
+
+        footer { padding: 80px 8% 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: #444; }
+
+        @media (max-width: 900px) { #cursor, #cursor-follower { display: none; } * { cursor: auto; } }
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+    <div id="cursor-follower"></div>
+    <div class="blob" id="blob"></div>
+
+    <nav>
+        <div class="logo">MIRAZIZ<span>.</span></div>
+        <div style="font-family: monospace; color: var(--primary);">EST. 2026 / FULLSTACK</div>
+    </nav>
+
+    <section class="hero">
+        <p style="color: var(--primary); letter-spacing: 4px; margin-bottom: 10px;">HELLO VISITOR</p>
+        <h1>SYSTEM<br><span>ARCHITECT</span></h1>
+        <div class="about-card">
+            2 года в <b>IT HUB</b> сформировали мое видение разработки. Я создаю не просто сайты, а автоматизированные системы: от фронтенда на React до сложных Telegram-ботов на Python. 
+        </div>
+    </section>
+
+    <section id="skills">
+        <h2 style="font-family: 'Syne'; font-size: 3rem; margin-bottom: 40px;">SKILLS</h2>
+        <div class="skills-container">
+            <div class="skill-card">
+                <div style="display: flex; justify-content: space-between;"><b>FRONTEND</b> <span>87%</span></div>
+                <div class="progress-track"><div class="progress-bar" data-width="87%"></div></div>
+            </div>
+            <div class="skill-card">
+                <div style="display: flex; justify-content: space-between;"><b>JS / TS</b> <span>79%</span></div>
+                <div class="progress-track"><div class="progress-bar" data-width="79%"></div></div>
+            </div>
+            <div class="skill-card">
+                <div style="display: flex; justify-content: space-between;"><b>PYTHON / BOTS</b> <span>85%</span></div>
+                <div class="progress-track"><div class="progress-bar" data-width="85%"></div></div>
+            </div>
+            <div class="skill-card">
+                <div style="display: flex; justify-content: space-between;"><b>PROMPT ENG.</b> <span>80%</span></div>
+                <div class="progress-track"><div class="progress-bar" data-width="80%"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2 style="font-family: 'Syne'; font-size: 3rem; margin-bottom: 40px;">LIVE SYSTEMS</h2>
+        <div class="projects-grid">
+            <a href="https://t.me/scripka_bot" target="_blank" class="project-card">
+                <i class="fab fa-telegram"></i>
+                <span class="tag">BACKEND</span>
+                <h3>SCRIPKA BOT</h3>
+                <p>Многофункциональный Telegram бот, разработанный на Python. Автоматизация задач и работа с API.</p>
+                <div style="color: var(--primary);">LAUNCH BOT →</div>
+            </a>
+
+            <a href="https://thespark.kz/" target="_blank" class="project-card">
+                <i class="fas fa-graduation-cap"></i>
+                <span class="tag">PLATFORM</span>
+                <h3>THE SPARK</h3>
+                <p>Образовательная платформа нового поколения. Полноценный интерфейс и UX.</p>
+                <div style="color: var(--primary);">VIEW LIVE →</div>
+            </a>
+
+            <a href="https://www.samrukmebel.com/" target="_blank" class="project-card">
+                <i class="fas fa-couch"></i>
+                <span class="tag">COMMERCE</span>
+                <h3>SAMRUK MEBEL</h3>
+                <p>Корпоративный портал для мебельного бренда. Оптимизация и SEO.</p>
+                <div style="color: var(--primary);">VIEW LIVE →</div>
+            </a>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 style="font-family: 'Syne'; font-size: 4rem; text-align: center; margin-bottom: 40px;">CONNECT</h2>
+        <div class="contact-grid">
+            <a href="https://wa.me/77752730110" class="btn-contact"><i class="fab fa-whatsapp"></i>WhatsApp</a>
+            <a href="https://t.me/@mmirazi10" class="btn-contact"><i class="fab fa-telegram-plane"></i>Telegram</a>
+            <a href="tel:+77752730110" class="btn-contact"><i class="fas fa-phone"></i>Call Me</a>
+            <a href="mailto:mmiraziz10@gmail.com" class="btn-contact"><i class="far fa-envelope"></i>Email</a>
+        </div>
+    </section>
+
+    <footer>
+        <div>DESIGNED BY MIRAZIZ / 2026</div>
+        <div style="display: flex; gap: 20px;">
+            <a href="https://github.com/@mmiraziz10" style="color: inherit; text-decoration: none;">GITHUB</a>
+            <a href="https://instagram.com/@mmiraziz10" style="color: inherit; text-decoration: none;">INSTAGRAM</a>
+            <a href="https://tiktok.com/@mmiraziz10" style="color: inherit; text-decoration: none;">TIKTOK</a>
+        </div>
+    </footer>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        const follower = document.getElementById('cursor-follower');
+        const blob = document.getElementById('blob');
+
+        document.addEventListener('mousemove', e => {
+            const { clientX, clientY } = e;
+            cursor.style.left = clientX + 'px';
+            cursor.style.top = clientY + 'px';
+            follower.style.left = (clientX - 20) + 'px';
+            follower.style.top = (clientY - 20) + 'px';
+            blob.animate({ left: `${clientX - 300}px`, top: `${clientY - 300}px` }, { duration: 4000, fill: "forwards" });
+        });
+
+        const bars = document.querySelectorAll('.progress-bar');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.style.width = e.target.getAttribute('data-width'); });
+        }, { threshold: 0.5 });
+        bars.forEach(b => observer.observe(b));
+
+        document.querySelectorAll('a').forEach(el => {
+            el.addEventListener('mouseenter', () => { follower.style.transform = 'scale(2)'; follower.style.backgroundColor = 'rgba(0, 255, 163, 0.1)'; });
+            el.addEventListener('mouseleave', () => { follower.style.transform = 'scale(1)'; follower.style.backgroundColor = 'transparent'; });
+        });
+    </script>
+</body>
+</html>
